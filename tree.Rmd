@@ -1,0 +1,59 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+set.seed(921)
+path <- '/Users/kaakxixi/Documents/dxin/data/vip_lose2.csv'
+vips <-read.csv(path,header = T)
+head(vips)
+
+```
+
+
+```{r}
+shuffle_index <- sample(1:nrow(vips))
+head(shuffle_index)
+vips <- vips[shuffle_index, ]
+head(vips)
+```
+
+
+```{r}
+library(dplyr)
+clean_vips <- vips %>% select(-c('member_id','店铺','公司名称','近90天平均每次消费分段')) %>%
+  mutate(retent=factor(retent, levels = c(0, 1), labels = c('Lose', 'Retent')))
+
+glimpse(clean_vips)
+
+
+
+data_train <- clean_vips[1:40000,]
+data_test <- clean_vips[-c(1:40000),]
+dim(data_train)
+```
+
+
+```{r}
+library(rpart)
+library(rpart.plot)
+fit <- rpart(retent~., data = data_train,method = "class"
+             ,control=rpart.control(cp=0.01))
+rpart.plot(fit, extra = 106,main="会员流失决策树")
+```
+
+
+```{r}
+fit2 <- rpart(retent~最近一次渠道+最近一次就餐方式+最近一次时段+商圈类型+城市类型+新既分类+区域名称+业态+经营类型+近90天消费分段+近90天tc分段+近90天活跃天数分段+近90天偏好时段+近90天偏好渠道+近90天偏好就餐方式,
+              data = data_train,method = "class",
+             control=rpart.control(cp=0.0018))
+rpart.plot(fit2, extra = 106,main="会员流失决策树")
+```
+
+
+
