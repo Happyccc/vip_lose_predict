@@ -9,7 +9,7 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 set.seed(921)
-path <- '/Users/kaakxixi/Documents/dxin/data/vip_lose2.csv'
+path <- '/Users/kaakxixi/Documents/data/vip_lose2_tuomin.csv'
 vips <-read.csv(path,header = T)
 head(vips)
 
